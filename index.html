@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Algorithm Visualizer</h1>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="topicSelect">Topic:</label>
+                <select id="topicSelect">
+                    <option value="sorting">Sorting</option>
+                    <option value="search">Search</option>
+                    <option value="trees">Trees</option>
+                </select>
+
+                <label for="algorithmSelect">Algorithm:</label>
+                <select id="algorithmSelect">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="quick">Quick Sort</option>
+                </select>
+
+                <label for="sizeSelect">Size:</label>
+                <select id="sizeSelect">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="0" max="900" value="700">
+            </div>
+
+            <div class="control-group">
+                <button id="generateBtn">🎲 Generate New Array</button>
+                <button id="startBtn">▶️ Start</button>
+                <button id="pauseBtn" disabled>⏸️ Pause</button>
+                <button id="resetBtn">🔄 Reset</button>
+                <button id="stepBtn">👆 Step</button>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div id="arrayContainer" class="array-container"></div>
+        </div>
+
+        <div class="status">
+            <div id="statusText">Ready to visualize!</div>
+            <div class="stats">
+                <div class="stat">
+                    <div id="comparisons">0</div>
+                    <div>Comparisons</div>
+                </div>
+                <div class="stat">
+                    <div id="swaps">0</div>
+                    <div>Swaps</div>
+                </div>
+                <div class="stat">
+                    <div id="time">0</div>
+                    <div>Time (ms)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="algorithm-info">
+            <div id="algorithmDescription">
+                Bubble Sort: Repeatedly steps through the list, compares adjacent elements and swaps them if they're in the wrong order.
+            </div>
+            <div class="complexity">
+                <div class="complexity-item">
+                    <strong>Time:</strong> <span id="timeComplexity">O(n²)</span>
+                </div>
+                <div class="complexity-item">
+                    <strong>Space:</strong> <span id="spaceComplexity">O(1)</span>
+                </div>
+                <div class="complexity-item">
+                    <strong>Stable:</strong> <span id="stable">Yes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
