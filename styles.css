@@ -5,122 +5,135 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f8fafc;
     min-height: 100vh;
     padding: 20px;
-    color: #1e1b4b;
+    color: #1e293b;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    border: 1px solid #e2e8f0;
 }
 
 .header {
-    background: linear-gradient(45deg, #4f46e5, #7c3aed);
+    background: #1e293b;
     color: white;
-    padding: 30px;
+    padding: 28px;
     text-align: center;
+    border-bottom: 1px solid #334155;
 }
 
 .header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-size: 2.2em;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
 .controls {
-    padding: 30px;
-    background: #f5f3ff;
-    border-bottom: 1px solid #ddd6fe;
+    padding: 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .control-group {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .control-group label {
-    font-weight: 600;
-    color: #4f46e5;
+    font-weight: 500;
+    color: #475569;
+    font-size: 0.95em;
 }
 
-select, input, button {
-    padding: 10px 15px;
-    border: 2px solid #ddd6fe;
-    border-radius: 8px;
+select,
+input {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-select:focus, input:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    transition: all 0.2s ease;
+    background-color: white;
+    color: #334155;
 }
 
 button {
-    background: #4f46e5;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: #1e293b;
     color: white;
     border: none;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+select:focus,
+input:focus {
+    outline: none;
+    border-color: #94a3b8;
+    box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
 }
 
 button:hover {
-    background: #4338ca;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+    background: #334155;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 button:disabled {
-    background: #a5b4fc;
+    background: #cbd5e1;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    color: #64748b;
 }
 
 .visualization {
-    padding: 40px;
+    padding: 32px;
     min-height: 400px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #faf9ff;
+    background: #f8fafc;
 }
 
 .array-container {
     display: flex;
-    gap: 5px;
+    gap: 4px;
     align-items: end;
     justify-content: center;
+    width: 100%;
 }
 
 .bar {
-    min-width: 30px;
-    border-radius: 5px 5px 0 0;
+    min-width: 24px;
+    border-radius: 3px 3px 0 0;
     display: flex;
     align-items: end;
     justify-content: center;
     color: white;
-    font-weight: bold;
-    transition: height 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+    font-weight: 500;
+    transition: height 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
     position: relative;
-    background: #6366f1;
+    background: #475569;
+    font-size: 12px;
 }
 
 .bar.comparing {
     background: #f59e0b !important;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .bar.sorted {
@@ -131,18 +144,61 @@ button:disabled {
     background: #ef4444 !important;
 }
 
+.counting-container {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px 0;
+    max-width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.counting-bar {
+    min-width: 24px;
+    height: var(--count-height, 50px);
+    border-radius: 3px 3px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    color: #000000;
+    font-weight: 500;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    background: #8b5cf6;
+    --count-height: 50px; 
+    padding-bottom: 4px; 
+}
+
+.counting-bar .count-value {
+    margin-bottom: 2px;
+}
+
+.counting-bar .count-index {
+    font-size: 10px; 
+    color: #10b981 !important; 
+}
+
+.counting-bar.active {
+    animation: pulse 0.8s infinite;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
 .status {
-    padding: 20px 30px;
-    background: #1e1b4b;
+    padding: 18px 24px;
+    background: #1e293b;
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 0.9em;
 }
 
 .stats {
     display: flex;
-    gap: 30px;
+    gap: 24px;
 }
 
 .stat {
@@ -150,85 +206,94 @@ button:disabled {
 }
 
 .stat-value {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #a5b4fc;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #e2e8f0;
 }
 
 .algorithm-info {
-    background: #f5f3ff;
-    padding: 20px 30px;
-    border-top: 1px solid #ddd6fe;
+    background: #ffffff;
+    padding: 20px 24px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: #475569;
 }
 
 .complexity {
     display: flex;
-    gap: 30px;
-    margin-top: 10px;
+    gap: 16px;
+    margin-top: 12px;
 }
 
 .complexity-item {
-    background: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border: 1px solid #ddd6fe;
+    background: #f8fafc;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.9em;
+}
+
+.complexity-item strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #1e293b;
 }
 
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.03); }
 }
 
 .bar.active {
-    animation: pulse 0.6s infinite;
+    animation: pulse 0.8s infinite;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
         margin: 10px;
-        border-radius: 10px;
+        border-radius: 8px;
     }
-    
+
     .header h1 {
-        font-size: 2em;
+        font-size: 1.8em;
     }
-    
+
     .controls {
-        padding: 20px;
+        padding: 18px;
     }
-    
+
     .control-group {
-        gap: 15px;
-        margin-bottom: 15px;
+        gap: 12px;
+        margin-bottom: 12px;
     }
-    
+
     .visualization {
         padding: 20px;
         min-height: 300px;
     }
-    
+
     .bar {
-        min-width: 20px;
-        font-size: 12px;
+        min-width: 18px;
+        font-size: 10px;
     }
-    
+
     .status {
-        padding: 15px 20px;
+        padding: 14px 18px;
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
     }
-    
+
     .stats {
-        gap: 20px;
+        gap: 18px;
     }
-    
+
     .complexity {
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 12px;
     }
-    
+
     .complexity-item {
         flex: 1;
         min-width: 120px;
@@ -239,38 +304,40 @@ button:disabled {
     body {
         padding: 10px;
     }
-    
+
     .header {
         padding: 20px;
     }
-    
+
     .header h1 {
-        font-size: 1.8em;
+        font-size: 1.6em;
     }
-    
+
     .control-group {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
     }
-    
+
     .control-group label {
-        margin-bottom: 5px;
+        margin-bottom: 4px;
     }
-    
-    select, input, button {
-        padding: 12px;
-        font-size: 16px;
+
+    select,
+    input,
+    button {
+        padding: 10px;
+        font-size: 14px;
     }
-    
+
     .bar {
-        min-width: 15px;
-        font-size: 10px;
+        min-width: 12px;
+        font-size: 8px;
     }
-    
+
     .stats {
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 12px;
         justify-content: center;
     }
 }

@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algorithm Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Algorithm Visualizer</h1>
+            <h1>Algorithm Visualizer</h1>
         </div>
-
         <div class="controls">
             <div class="control-group">
                 <label for="topicSelect">Topic:</label>
@@ -20,27 +22,32 @@
                     <option value="search">Search</option>
                     <option value="trees">Trees</option>
                 </select>
-
+            </div>
+            <div class="control-group">
                 <label for="algorithmSelect">Algorithm:</label>
                 <select id="algorithmSelect">
+                    <option value="bogo">Bogo Sort</option>
                     <option value="bubble">Bubble Sort</option>
                     <option value="selection">Selection Sort</option>
                     <option value="insertion">Insertion Sort</option>
                     <option value="quick">Quick Sort</option>
+                    <option value="merge">Merge Sort</option>
+                    <option value="counting">Counting Sort</option>
                 </select>
-
+            </div>
+            <div class="control-group">
                 <label for="sizeSelect">Size:</label>
                 <select id="sizeSelect">
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="30">30</option>
                 </select>
-
-                <label for="speedSlider">Speed:</label>
-                <input type="range" id="speedSlider" min="0" max="900" value="700">
             </div>
-
             <div class="control-group">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="100" max="900" value="700">
+            </div>
+            <div class="control-group buttons">
                 <button id="generateBtn">🎲 Generate New Array</button>
                 <button id="startBtn">▶️ Start</button>
                 <button id="pauseBtn" disabled>⏸️ Pause</button>
@@ -48,33 +55,29 @@
                 <button id="stepBtn">👆 Step</button>
             </div>
         </div>
-
         <div class="visualization">
             <div id="arrayContainer" class="array-container"></div>
+            <div id="countingContainer" class="counting-container"></div>
         </div>
-
         <div class="status">
-            <div id="statusText">Ready to visualize!</div>
+            <span id="statusText">Ready to visualize!</span>
             <div class="stats">
                 <div class="stat">
-                    <div id="comparisons">0</div>
-                    <div>Comparisons</div>
+                    <span id="comparisons" class="stat-value">0</span>
+                    <span>Comparisons</span>
                 </div>
                 <div class="stat">
-                    <div id="swaps">0</div>
-                    <div>Swaps</div>
+                    <span id="swaps" class="stat-value">0</span>
+                    <span>Swaps</span>
                 </div>
                 <div class="stat">
-                    <div id="time">0</div>
-                    <div>Time (ms)</div>
+                    <span id="time" class="stat-value">0</span>
+                    <span>Time (ms)</span>
                 </div>
             </div>
         </div>
-
         <div class="algorithm-info">
-            <div id="algorithmDescription">
-                Bubble Sort: Repeatedly steps through the list, compares adjacent elements and swaps them if they're in the wrong order.
-            </div>
+            <div id="algorithmDescription"></div>
             <div class="complexity">
                 <div class="complexity-item">
                     <strong>Time:</strong> <span id="timeComplexity">O(n²)</span>
@@ -88,7 +91,7 @@
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
+
 </html>

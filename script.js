@@ -19,34 +19,36 @@ class AlgorithmVisualizer {
     }
 
     initializeElements() {
-    this.elements = {
-        topicSelect: document.getElementById('topicSelect'),
-        algorithmSelect: document.getElementById('algorithmSelect'),
-        algorithmContainer: document.getElementById('algorithmContainer'),
-        sizeSelect: document.getElementById('sizeSelect'),
-        speedSlider: document.getElementById('speedSlider'),
-        generateBtn: document.getElementById('generateBtn'),
-        startBtn: document.getElementById('startBtn'),
-        pauseBtn: document.getElementById('pauseBtn'),
-        resetBtn: document.getElementById('resetBtn'),
-        stepBtn: document.getElementById('stepBtn'),
-        arrayContainer: document.getElementById('arrayContainer'),
-        statusText: document.getElementById('statusText'),
-        comparisons: document.getElementById('comparisons'),
-        swaps: document.getElementById('swaps'),
-        time: document.getElementById('time'),
-        algorithmDescription: document.getElementById('algorithmDescription'),
-        timeComplexity: document.getElementById('timeComplexity'),
-        spaceComplexity: document.getElementById('spaceComplexity'),
-        stable: document.getElementById('stable')
-    };
-    // Check for missing elements
-    for (const [key, value] of Object.entries(this.elements)) {
-        if (!value) {
-            console.error(`Element with ID '${key}' not found in the DOM`);
-            this.elements.statusText.textContent = `Error: Missing element '${key}'`;
+        this.elements = {
+            topicSelect: document.getElementById('topicSelect'),
+            algorithmSelect: document.getElementById('algorithmSelect'),
+            algorithmContainer: document.getElementById('algorithmContainer'),
+            sizeSelect: document.getElementById('sizeSelect'),
+            speedSlider: document.getElementById('speedSlider'),
+            generateBtn: document.getElementById('generateBtn'),
+            startBtn: document.getElementById('startBtn'),
+            pauseBtn: document.getElementById('pauseBtn'),
+            resetBtn: document.getElementById('resetBtn'),
+            stepBtn: document.getElementById('stepBtn'),
+            arrayContainer: document.getElementById('arrayContainer'),
+            countingContainer: document.getElementById('countingContainer'),
+            statusText: document.getElementById('statusText'),
+            comparisons: document.getElementById('comparisons'),
+            swaps: document.getElementById('swaps'),
+            time: document.getElementById('time'),
+            algorithmDescription: document.getElementById('algorithmDescription'),
+            timeComplexity: document.getElementById('timeComplexity'),
+            spaceComplexity: document.getElementById('spaceComplexity'),
+            stable: document.getElementById('stable')
+        };
+        // Check for missing elements
+        for (const [key, value] of Object.entries(this.elements)) {
+            if (!value) {
+                console.error(`Element with ID '${key}' not found in the DOM`);
+                this.elements.statusText.textContent = `Error: Missing element '${key}'`;
+                return;
+            }
         }
-    }
     }
 
     setupEventListeners() {
@@ -83,19 +85,20 @@ class AlgorithmVisualizer {
 
         const algorithms = {
             sorting: [
+                { value: 'bogo', name: 'Bogo Sort' },
                 { value: 'bubble', name: 'Bubble Sort' },
                 { value: 'selection', name: 'Selection Sort' },
                 { value: 'insertion', name: 'Insertion Sort' },
-                { value: 'quick', name: 'Quick Sort' }
+                { value: 'quick', name: 'Quick Sort' },
+                { value: 'merge', name: 'Merge Sort' },
+                { value: 'counting', name: 'Counting Sort' }
             ],
             search: [
                 { value: 'linear', name: 'Linear Search' },
                 { value: 'binary', name: 'Binary Search' }
             ],
             trees: [
-                { value: 'bst', name: 'Binary Search Tree' },
-                { value: 'avl', name: 'AVL Tree' },
-                { value: 'traversal', name: 'Tree Traversal' }
+                
             ]
         };
 
@@ -115,13 +118,10 @@ class AlgorithmVisualizer {
         this.array = [];
 
         for (let i = 0; i < size; i++) {
-            this.array.push(Math.floor(Math.random() * 300) + 10);
+            this.array.push(Math.floor(Math.random() * 100) + 1); // Reduced range to 1-100 for simplicity
         }
 
-        if (this.currentAlgorithm === 'binary') {
-            this.array.sort((a, b) => a - b);
-        }
-
+        console.log('Generated unsorted array:', this.array);
         this.renderArray();
         this.reset();
     }
@@ -136,7 +136,7 @@ class AlgorithmVisualizer {
             const bar = document.createElement('div');
             bar.className = 'bar';
             bar.style.height = `${(value / maxValue) * 300}px`;
-            bar.style.backgroundColor = '#4f46e5';
+            bar.style.backgroundColor = '#475569';
             bar.textContent = value;
             bar.id = `bar-${index}`;
             container.appendChild(bar);
@@ -145,6 +145,12 @@ class AlgorithmVisualizer {
 
     updateAlgorithmInfo() {
         const info = {
+            bogo: {
+                description: "Bogo Sort: Randomly shuffles the array until it is sorted by chance.",
+                time: "O((n+1)!) avg, O(∞) worst",
+                space: "O(1)",
+                stable: "Yes"
+            },
             bubble: {
                 description: "Bubble Sort: Repeatedly steps through the list, compares adjacent elements and swaps them if they're in the wrong order.",
                 time: "O(n²)",
@@ -198,6 +204,18 @@ class AlgorithmVisualizer {
                 time: "O(n)",
                 space: "O(n)",
                 stable: "N/A"
+            },
+            merge: {
+                description: "Merge Sort: Divides the array into halves, sorts them, and merges the sorted halves.",
+                time: "O(n log n)",
+                space: "O(n)",
+                stable: "Yes"
+            },
+            counting: {
+                description: "Counting Sort: Uses a counting array to determine the position of each element, sorting based on frequency.",
+                time: "O(n + k)",
+                space: "O(k)",
+                stable: "Yes"
             }
         };
 
@@ -209,71 +227,17 @@ class AlgorithmVisualizer {
     }
 
     async start() {
-    if (this.isPaused) {
-        this.isPaused = false;
-        this.elements.startBtn.disabled = true;
-        this.elements.pauseBtn.disabled = false;
-        if (this.nextStep) this.nextStep();
-        return;
-    }
-
-    this.isRunning = true;
-    this.isPaused = false;
-    this.stepMode = false;
-    this.startTime = Date.now();
-    this.comparisons = 0;
-    this.swaps = 0;
-    this.elements.comparisons.textContent = '0';
-    this.elements.swaps.textContent = '0';
-
-    this.elements.startBtn.disabled = true;
-    this.elements.pauseBtn.disabled = false;
-    this.elements.generateBtn.disabled = true;
-    this.elements.stepBtn.disabled = true;
-
-    this.elements.statusText.textContent = 'Sorting...';
-
-    try {
-        let algorithmPromise;
-        switch (this.currentAlgorithm) {
-            case 'bubble':
-                algorithmPromise = this.bubbleSort();
-                break;
-            case 'selection':
-                algorithmPromise = this.selectionSort();
-                break;
-            case 'insertion':
-                algorithmPromise = this.insertionSort();
-                break;
-            case 'quick':
-                algorithmPromise = this.quickSort(0, this.array.length - 1);
-                break;
-            case 'linear':
-                algorithmPromise = this.linearSearch();
-                break;
-            case 'binary':
-                algorithmPromise = this.binarySearch();
-                break;
-            default:
-                throw new Error(`Unknown algorithm: ${this.currentAlgorithm}`);
+        if (this.isPaused) {
+            this.isPaused = false;
+            this.elements.startBtn.disabled = true;
+            this.elements.pauseBtn.disabled = false;
+            if (this.nextStep) this.nextStep();
+            return;
         }
 
-        await algorithmPromise;
-
-        if (!this.isPaused) {
-            this.complete();
-        }
-    } catch (error) {
-        console.error('Visualization error:', error);
-        this.elements.statusText.textContent = 'Error occurred during visualization';
-        this.reset();
-    }
-}
-
-  async step() {
-    if (!this.isRunning) {
         this.isRunning = true;
-        this.stepMode = true;
+        this.isPaused = false;
+        this.stepMode = false;
         this.startTime = Date.now();
         this.comparisons = 0;
         this.swaps = 0;
@@ -283,36 +247,142 @@ class AlgorithmVisualizer {
         this.elements.startBtn.disabled = true;
         this.elements.pauseBtn.disabled = false;
         this.elements.generateBtn.disabled = true;
-        this.elements.stepBtn.disabled = false;
+        this.elements.stepBtn.disabled = true;
 
-        this.elements.statusText.textContent = 'Step mode - click Step to continue';
+        this.elements.statusText.textContent = 'Preparing array...';
 
-        // Start the algorithm in step mode
-        switch (this.currentAlgorithm) {
-            case 'bubble':
-                this.bubbleSort().catch(e => console.error(e));
-                break;
-            case 'selection':
-                this.selectionSort().catch(e => console.error(e));
-                break;
-            case 'insertion':
-                this.insertionSort().catch(e => console.error(e));
-                break;
-            case 'quick':
-                this.quickSort(0, this.array.length - 1).catch(e => console.error(e));
-                break;
-            case 'linear':
-                this.linearSearch().catch(e => console.error(e));
-                break;
-            case 'binary':
-                this.binarySearch().catch(e => console.error(e));
-                break;
+        try {
+            let algorithmPromise;
+            switch (this.currentAlgorithm) {
+                case 'bubble':
+                    algorithmPromise = this.bubbleSort();
+                    this.elements.statusText.textContent = 'Sorting with Bubble Sort...';
+                    break;
+                case 'selection':
+                    algorithmPromise = this.selectionSort();
+                    this.elements.statusText.textContent = 'Sorting with Selection Sort...';
+                    break;
+                case 'insertion':
+                    algorithmPromise = this.insertionSort();
+                    this.elements.statusText.textContent = 'Sorting with Insertion Sort...';
+                    break;
+                case 'quick':
+                    algorithmPromise = this.quickSort(0, this.array.length - 1);
+                    this.elements.statusText.textContent = 'Sorting with Quick Sort...';
+                    break;
+                case 'linear':
+                    algorithmPromise = this.linearSearch();
+                    this.elements.statusText.textContent = 'Searching with Linear Search...';
+                    break;
+                case 'binary':
+                    // Sort the array before searching
+                    this.array.sort((a, b) => a - b);
+                    this.renderArray();
+                    this.elements.statusText.textContent = 'Searching with Binary Search...';
+                    algorithmPromise = this.binarySearch();
+                    break;
+                case 'merge':
+                    this.elements.statusText.textContent = 'Sorting with Merge Sort...';
+                    algorithmPromise = this.mergeSort(0, this.array.length - 1);
+                    break;
+                case 'bogo':
+                    this.elements.statusText.textContent = 'Sorting with Bogo Sort...';
+                    algorithmPromise = this.bogoSort();
+                    break;
+                case 'counting':
+                    this.elements.statusText.textContent = 'Sorting with Counting Sort...';
+                    algorithmPromise = this.countingSort();
+                    break;
+                default:
+                    throw new Error(`Unknown algorithm: ${this.currentAlgorithm}`);
+            }
+
+            await algorithmPromise;
+
+            if (!this.isPaused) {
+                this.complete();
+            }
+        } catch (error) {
+            console.error('Visualization error:', error);
+            this.elements.statusText.textContent = 'Error occurred during visualization';
+            this.reset();
         }
-    } else if (this.stepMode && this.nextStep) {
-        // Trigger the next step
-        this.nextStep();
     }
-}
+
+    async step() {
+        if (!this.isRunning) {
+            this.isRunning = true;
+            this.stepMode = true;
+            this.startTime = Date.now();
+            this.comparisons = 0;
+            this.swaps = 0;
+            this.elements.comparisons.textContent = '0';
+            this.elements.swaps.textContent = '0';
+
+            this.elements.startBtn.disabled = true;
+            this.elements.pauseBtn.disabled = false;
+            this.elements.generateBtn.disabled = true;
+            this.elements.stepBtn.disabled = false;
+
+            this.elements.statusText.textContent = 'Step mode - click Step to continue';
+
+            try {
+                switch (this.currentAlgorithm) {
+                    case 'bogo':
+                        this.elements.statusText.textContent = 'Sorting with Bogo Sort...';
+                        await this.bogoSort();
+                        break;
+                    case 'bubble':
+                        this.elements.statusText.textContent = 'Sorting with Bubble Sort...';
+                        await this.bubbleSort();
+                        break;
+                    case 'selection':
+                        this.elements.statusText.textContent = 'Sorting with Selection Sort...';
+                        await this.selectionSort();
+                        break;
+                    case 'insertion':
+                        this.elements.statusText.textContent = 'Sorting with Insertion Sort...';
+                        await this.insertionSort();
+                        break;
+                    case 'quick':
+                        this.elements.statusText.textContent = 'Sorting with Quick Sort...';
+                        await this.quickSort(0, this.array.length - 1);
+                        break;
+                    case 'linear':
+                        this.elements.statusText.textContent = 'Searching with Linear Search...';
+                        await this.linearSearch();
+                        break;
+                    case 'binary':
+                        // Sort the array before searching
+                        this.array.sort((a, b) => a - b);
+                        this.renderArray();
+                        this.elements.statusText.textContent = 'Searching with Binary Search...';
+                        await this.binarySearch();
+                        break;
+                    case 'merge':
+                        this.elements.statusText.textContent = 'Sorting with Merge Sort...';
+                        await this.mergeSort(0, this.array.length - 1);
+                        break;
+                    case 'counting':
+                        this.elements.statusText.textContent = 'Sorting with Counting Sort...';
+                        await this.countingSort();
+                        break;
+                    default:
+                        throw new Error(`Unknown algorithm: ${this.currentAlgorithm}`);
+                }
+
+                if (!this.isPaused) {
+                    this.complete();
+                }
+            } catch (error) {
+                console.error('Step mode error:', error);
+                this.elements.statusText.textContent = 'Error in step mode';
+                this.reset();
+            }
+        } else if (this.stepMode && this.nextStep) {
+            this.nextStep();
+        }
+    }
 
     pause() {
         this.isPaused = true;
@@ -321,30 +391,31 @@ class AlgorithmVisualizer {
         this.elements.statusText.textContent = 'Paused';
     }
 
-reset() {
-    this.isRunning = false;
-    this.isPaused = false;
-    this.stepMode = false;
-    this.comparisons = 0;
-    this.swaps = 0;
-    this.nextStep = null; // Clear any pending step
+    reset() {
+        this.isRunning = false;
+        this.isPaused = false;
+        this.stepMode = false;
+        this.comparisons = 0;
+        this.swaps = 0;
+        this.nextStep = null;
 
-    this.elements.startBtn.disabled = false;
-    this.elements.pauseBtn.disabled = true;
-    this.elements.generateBtn.disabled = false;
-    this.elements.stepBtn.disabled = false;
+        this.elements.startBtn.disabled = false;
+        this.elements.pauseBtn.disabled = true;
+        this.elements.generateBtn.disabled = false;
+        this.elements.stepBtn.disabled = false;
 
-    this.elements.statusText.textContent = 'Ready to visualize!';
-    this.elements.comparisons.textContent = '0';
-    this.elements.swaps.textContent = '0';
-    this.elements.time.textContent = '0';
+        this.elements.statusText.textContent = 'Ready to visualize!';
+        this.elements.comparisons.textContent = '0';
+        this.elements.swaps.textContent = '0';
+        this.elements.time.textContent = '0';
 
-    document.querySelectorAll('.bar').forEach(bar => {
-        bar.classList.remove('comparing', 'sorted', 'pivot', 'active');
-    });
+        document.querySelectorAll('.bar').forEach(bar => {
+            bar.classList.remove('comparing', 'sorted', 'pivot', 'active');
+        });
 
-    this.renderArray();
-}
+        this.renderArray();
+        this.elements.countingContainer.innerHTML = ''; // Clear counting array
+    }
 
     complete() {
         this.isRunning = false;
@@ -363,141 +434,138 @@ reset() {
     }
 
     sleep() {
-    return new Promise(resolve => {
-        if (this.stepMode) {
-            this.nextStep = () => {
-                resolve();
-                this.nextStep = null;
-            };
-        } else {
-            setTimeout(resolve, this.speed);
-        }
-    });
+        return new Promise(resolve => {
+            if (this.stepMode) {
+                this.nextStep = () => {
+                    resolve();
+                    this.nextStep = null;
+                };
+            } else {
+                setTimeout(resolve, this.speed);
+            }
+        });
     }
 
-    // Sorting Algorithms
+    /*
+        * Sorting Algorithms
+        * Bogo Sort, Bubble Sort, Selection Sort, Insertion Sort, Quick Sort, Merge Sort, Counting Sort
+        * These methods implement various sorting algorithms with visualization.
+    */
+    async bogoSort() {
+        while (!this.isSorted() && !this.isPaused) {
+            await this.shuffle();
+            this.highlightRange(0, this.array.length - 1, 'comparing');
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            await this.sleep();
+            if (this.isSorted()) {
+                for (let i = 0; i < this.array.length; i++) {
+                    this.highlightBars([i], 'sorted');
+                    await this.sleep();
+                }
+                this.elements.statusText.textContent = 'Bogo Sort complete by chance!';
+                return;
+            }
+            this.clearHighlights();
+        }
+    }
+
+    async shuffle() {
+        for (let i = this.array.length - 1; i > 0; i--) {
+            if (this.isPaused) return;
+            const j = Math.floor(Math.random() * (i + 1));
+            await this.swap(i, j);
+        }
+    }
+
+    isSorted() {
+        for (let i = 0; i < this.array.length - 1; i++) {
+            if (this.array[i] > this.array[i + 1]) return false;
+        }
+        return true;
+    }
+
     async bubbleSort() {
         const n = this.array.length;
         let swapped;
-
         do {
             swapped = false;
             for (let i = 0; i < n - 1; i++) {
                 if (this.isPaused) return;
-
                 this.highlightBars([i, i + 1], 'comparing');
                 this.comparisons++;
                 this.elements.comparisons.textContent = this.comparisons;
-
                 await this.sleep();
-
                 if (this.array[i] > this.array[i + 1]) {
                     await this.swap(i, i + 1);
                     swapped = true;
                 }
-
                 this.clearHighlights();
-
-                if (i === n - 2) {
-                    this.highlightBars([n - (swapped ? 0 : 1)], 'sorted');
-                }
+                if (i === n - 2) this.highlightBars([n - (swapped ? 0 : 1)], 'sorted');
             }
         } while (swapped && !this.isPaused);
-
-        if (!this.isPaused) {
-            for (let i = 0; i < n; i++) {
-                this.highlightBars([i], 'sorted');
-            }
-        }
+        if (!this.isPaused) for (let i = 0; i < n; i++) this.highlightBars([i], 'sorted');
     }
 
     async selectionSort() {
         const n = this.array.length;
-
         for (let i = 0; i < n - 1; i++) {
             if (this.isPaused) return;
-
             let minIdx = i;
             this.highlightBars([i], 'pivot');
             await this.sleep();
-
             for (let j = i + 1; j < n; j++) {
                 if (this.isPaused) return;
-
                 this.highlightBars([j], 'comparing');
                 this.comparisons++;
                 this.elements.comparisons.textContent = this.comparisons;
-
                 await this.sleep();
-
                 if (this.array[j] < this.array[minIdx]) {
                     if (minIdx !== i) this.clearHighlight(minIdx);
                     minIdx = j;
                     this.highlightBars([minIdx], 'pivot');
                     await this.sleep();
                 }
-
                 this.clearHighlight(j);
             }
-
-            if (minIdx !== i) {
-                await this.swap(i, minIdx);
-            }
-
+            if (minIdx !== i) await this.swap(i, minIdx);
             this.highlightBars([i], 'sorted');
             this.clearHighlight(minIdx);
         }
-
-        if (!this.isPaused) {
-            this.highlightBars([n - 1], 'sorted');
-        }
+        if (!this.isPaused) this.highlightBars([n - 1], 'sorted');
     }
 
     async insertionSort() {
         const n = this.array.length;
-
         for (let i = 1; i < n; i++) {
             if (this.isPaused) return;
-
             let key = this.array[i];
             let j = i - 1;
-
             this.highlightBars([i], 'pivot');
             await this.sleep();
-
             while (j >= 0 && this.array[j] > key) {
                 if (this.isPaused) return;
-
                 this.highlightBars([j, j + 1], 'comparing');
                 this.comparisons++;
                 this.elements.comparisons.textContent = this.comparisons;
-
                 await this.sleep();
-
                 this.array[j + 1] = this.array[j];
                 this.swaps++;
                 this.elements.swaps.textContent = this.swaps;
-
                 this.updateBar(j + 1, this.array[j + 1]);
                 j--;
-
                 this.clearHighlights();
             }
-
             this.array[j + 1] = key;
             this.updateBar(j + 1, key);
             this.clearHighlights();
-
-            for (let k = 0; k <= i; k++) {
-                this.highlightBars([k], 'sorted');
-            }
+            for (let k = 0; k <= i; k++) this.highlightBars([k], 'sorted');
         }
     }
 
     async quickSort(low, high) {
         if (low < high && !this.isPaused) {
             const pi = await this.partition(low, high);
-
             await this.quickSort(low, pi - 1);
             await this.quickSort(pi + 1, high);
         }
@@ -506,115 +574,274 @@ reset() {
     async partition(low, high) {
         const pivot = this.array[high];
         this.highlightBars([high], 'pivot');
-
         let i = low - 1;
-
         for (let j = low; j < high; j++) {
             if (this.isPaused) return i + 1;
-
             this.highlightBars([j], 'comparing');
             this.comparisons++;
             this.elements.comparisons.textContent = this.comparisons;
-
             await this.sleep();
-
             if (this.array[j] < pivot) {
                 i++;
-                if (i !== j) {
-                    await this.swap(i, j);
-                }
+                if (i !== j) await this.swap(i, j);
             }
-
             this.clearHighlight(j);
         }
-
         await this.swap(i + 1, high);
         this.clearHighlights();
-
         return i + 1;
     }
 
-    async linearSearch() {
-       const randomIndex = Math.floor(Math.random() * this.array.length);
-    const target = this.array[randomIndex];
-    this.elements.statusText.textContent = `Searching for ${target}...`;
-
-    for (let i = 0; i < this.array.length; i++) {
-        if (this.isPaused) return;
-
-        this.highlightBars([i], 'comparing');
-        this.comparisons++;
-        this.elements.comparisons.textContent = this.comparisons;
-
-        await this.sleep();
-
-        if (this.array[i] === target) {
-            this.highlightBars([i], 'sorted');
-            this.elements.statusText.textContent = `Found ${target} at index ${i}!`;
-            return;
+    async mergeSort(left, right) {
+        if (left < right && !this.isPaused) {
+            const mid = Math.floor((left + right) / 2);
+            await this.mergeSort(left, mid);
+            await this.mergeSort(mid + 1, right);
+            await this.merge(left, mid, right);
         }
-
-        this.clearHighlight(i);
+        if (left === 0 && right === this.array.length - 1 && !this.isPaused) {
+            for (let i = 0; i < this.array.length; i++) {
+                this.highlightBars([i], 'sorted');
+                await this.sleep();
+            }
+        }
     }
 
+    async merge(left, mid, right) {
+        const leftArray = this.array.slice(left, mid + 1);
+        const rightArray = this.array.slice(mid + 1, right + 1);
+        let i = 0, j = 0, k = left;
+        this.highlightRange(left, right, 'active');
+        while (i < leftArray.length && j < rightArray.length && !this.isPaused) {
+            this.highlightBars([left + i], 'comparing');
+            this.highlightBars([mid + 1 + j], 'comparing');
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            await this.sleep();
+            if (leftArray[i] <= rightArray[j]) {
+                this.array[k] = leftArray[i];
+                this.updateBar(k, this.array[k]);
+                i++;
+            } else {
+                this.array[k] = rightArray[j];
+                this.updateBar(k, this.array[k]);
+                j++;
+            }
+            k++;
+            this.clearHighlights();
+            await this.sleep();
+        }
+        while (i < leftArray.length && !this.isPaused) {
+            this.highlightBars([left + i], 'comparing');
+            this.array[k] = leftArray[i];
+            this.updateBar(k, this.array[k]);
+            i++;
+            k++;
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            await this.sleep();
+            this.clearHighlights();
+        }
+        while (j < rightArray.length && !this.isPaused) {
+            this.highlightBars([mid + 1 + j], 'comparing');
+            this.array[k] = rightArray[j];
+            this.updateBar(k, this.array[k]);
+            j++;
+            k++;
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            await this.sleep();
+            this.clearHighlights();
+        }
+        this.clearHighlights();
+    }
+
+    async countingSort() {
+        const maxValue = Math.max(...this.array);
+        let count = new Array(maxValue + 1).fill(0);
+        this.renderCountingArray(count);
+
+        // Step 1: Count occurrences
+        for (let i = 0; i < this.array.length && !this.isPaused; i++) {
+            this.highlightBars([i], 'comparing');
+            count[this.array[i]]++;
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            this.updateCountingBar(this.array[i], count[this.array[i]]);
+            await this.sleep();
+            this.clearHighlights();
+        }
+
+        // Step 2: Compute cumulative count
+        for (let i = 1; i < count.length && !this.isPaused; i++) {
+            count[i] += count[i - 1];
+            this.updateCountingBar(i, count[i]);
+            await this.sleep();
+        }
+
+        // Step 3: Build output array
+        const output = new Array(this.array.length);
+        for (let i = this.array.length - 1; i >= 0 && !this.isPaused; i--) {
+            this.highlightBars([i], 'comparing');
+            output[count[this.array[i]] - 1] = this.array[i];
+            count[this.array[i]]--;
+            this.updateCountingBar(this.array[i], count[this.array[i]]);
+            await this.sleep();
+            this.clearHighlights();
+        }
+
+        // Step 4: Copy back to original array
+        for (let i = 0; i < output.length && !this.isPaused; i++) {
+            this.array[i] = output[i];
+            this.updateBar(i, this.array[i]);
+            this.highlightBars([i], 'sorted');
+            await this.sleep();
+        }
+
+        if (!this.isPaused) {
+            this.elements.statusText.textContent = 'Counting Sort complete!';
+        }
+    }
+
+    renderCountingArray(count) {
+        const container = this.elements.countingContainer;
+        container.innerHTML = '';
+        count.forEach((value, index) => {
+            const bar = document.createElement('div');
+            bar.className = 'counting-bar';
+            const maxHeight = Math.max(...this.array) || 1; // Avoid division by zero
+            bar.style.height = `${(value / maxHeight) * 200}px`;
+            bar.innerHTML = `<span class="count-value">${value > 0 ? value : ''}</span><br><span class="count-index">${index}</span>`;
+            bar.id = `count-${index}`;
+            container.appendChild(bar);
+        });
+    }
+
+    updateCountingBar(index, value) {
+        const bar = document.getElementById(`count-${index}`);
+        if (bar) {
+            const maxHeight = Math.max(...this.array) || 1; // Avoid division by zero
+            bar.style.height = `${(value / maxHeight) * 200}px`;
+            bar.querySelector('.count-value').textContent = value > 0 ? value : '';
+            bar.classList.add('active');
+            setTimeout(() => bar.classList.remove('active'), this.speed);
+        }
+    }
+    renderCountingArray(count) {
+        const container = this.elements.countingContainer;
+        container.innerHTML = '';
+        count.forEach((value, index) => {
+            const bar = document.createElement('div');
+            bar.className = 'counting-bar';
+            const maxHeight = Math.max(...this.array) || 1;
+            bar.style.height = `${(value / maxHeight) * 200}px`;
+            bar.textContent = value > 0 ? value : '';
+            bar.id = `count-${index}`;
+            container.appendChild(bar);
+        });
+    }
+
+    updateCountingBar(index, value) {
+        const bar = document.getElementById(`count-${index}`);
+        if (bar) {
+            const maxHeight = Math.max(...this.array) || 1;
+            bar.style.height = `${(value / maxHeight) * 200}px`;
+            bar.textContent = value > 0 ? value : '';
+            bar.classList.add('active');
+            setTimeout(() => bar.classList.remove('active'), this.speed);
+        }
+    }
+
+    /*
+        * Search Algorithms
+        * Linear Search and Binary Search
+        * These methods are designed to search for a randomly selected element in the array.
+        * The linear search checks each element sequentially, while the binary search requires the array to be sorted first.
+    */
+    async linearSearch() {
+        const randomIndex = Math.floor(Math.random() * this.array.length);
+        const target = this.array[randomIndex];
+        this.elements.statusText.textContent = `Searching for ${target}...`;
+
+        for (let i = 0; i < this.array.length; i++) {
+            if (this.isPaused) return;
+            this.highlightBars([i], 'comparing');
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            await this.sleep();
+            if (this.array[i] === target) {
+                this.highlightBars([i], 'sorted');
+                this.elements.statusText.textContent = `Found ${target} at index ${i}!`;
+                return;
+            }
+            this.clearHighlight(i);
+        }
     }
 
     async binarySearch() {
-       // Select a random index from the array to ensure the target exists
-    const randomIndex = Math.floor(Math.random() * this.array.length);
-    const target = this.array[randomIndex];
-    this.elements.statusText.textContent = `Searching for ${target}...`;
+        const randomIndex = Math.floor(Math.random() * this.array.length);
+        const target = this.array[randomIndex];
+        this.elements.statusText.textContent = `Searching for ${target}...`;
 
-    let left = 0;
-    let right = this.array.length - 1;
+        let left = 0;
+        let right = this.array.length - 1;
+        this.highlightRange(left, right, 'active');
 
-    while (left <= right) {
-        if (this.isPaused) return;
-
-        const mid = Math.floor((left + right) / 2);
-
-        this.highlightBars([mid], 'comparing');
-        this.comparisons++;
-        this.elements.comparisons.textContent = this.comparisons;
-
-        await this.sleep();
-
-        if (this.array[mid] === target) {
-            this.highlightBars([mid], 'sorted');
-            this.elements.statusText.textContent = `Found ${target} at index ${mid}!`;
-            return;
+        while (left <= right) {
+            if (this.isPaused) {
+                this.clearHighlights();
+                return;
+            }
+            const mid = Math.floor((left + right) / 2);
+            this.highlightBars([mid], 'comparing');
+            this.comparisons++;
+            this.elements.comparisons.textContent = this.comparisons;
+            await this.sleep();
+            if (this.array[mid] === target) {
+                this.clearHighlights();
+                this.highlightBars([mid], 'sorted');
+                this.elements.statusText.textContent = `Found ${target} at index ${mid}!`;
+                return;
+            }
+            this.clearHighlight(mid);
+            if (this.array[mid] < target) {
+                this.clearHighlights();
+                left = mid + 1;
+                this.highlightRange(left, right, 'active');
+            } else {
+                this.clearHighlights();
+                right = mid - 1;
+                this.highlightRange(left, right, 'active');
+            }
+            await this.sleep();
         }
-
-        this.clearHighlight(mid);
-
-        if (this.array[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-
+        this.clearHighlights();
+        this.elements.statusText.textContent = `${target} not found in array.`;
     }
 
     // Helper Methods
+    highlightRange(start, end, className) {
+        for (let i = start; i <= end; i++) {
+            const bar = document.getElementById(`bar-${i}`);
+            if (bar) bar.classList.add(className);
+        }
+    }
+
     async swap(i, j) {
         const temp = this.array[i];
         this.array[i] = this.array[j];
         this.array[j] = temp;
-
         this.swaps++;
         this.elements.swaps.textContent = this.swaps;
-
         this.updateBar(i, this.array[i]);
         this.updateBar(j, this.array[j]);
-
         await this.sleep();
     }
 
     updateBar(index, value) {
         const bar = document.getElementById(`bar-${index}`);
         if (bar) {
-            const maxValue = Math.max(...this.array);
+            const maxValue = Math.max(...this.array) || 1; // Avoid division by zero
             bar.style.height = `${(value / maxValue) * 300}px`;
             bar.textContent = value;
         }
@@ -623,9 +850,7 @@ reset() {
     highlightBars(indices, className) {
         indices.forEach(index => {
             const bar = document.getElementById(`bar-${index}`);
-            if (bar) {
-                bar.classList.add(className);
-            }
+            if (bar) bar.classList.add(className);
         });
     }
 
@@ -637,9 +862,7 @@ reset() {
 
     clearHighlight(index) {
         const bar = document.getElementById(`bar-${index}`);
-        if (bar) {
-            bar.classList.remove('comparing', 'active');
-        }
+        if (bar) bar.classList.remove('comparing', 'active');
     }
 }
 
