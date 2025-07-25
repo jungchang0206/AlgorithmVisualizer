@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algorithm Visualizer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="container">
         <div class="header">
             <h1>Algorithm Visualizer</h1>
         </div>
+
         <div class="controls">
             <div class="control-group">
                 <label for="topicSelect">Topic:</label>
@@ -21,20 +19,18 @@
                     <option value="sorting">Sorting</option>
                     <option value="search">Search</option>
                     <option value="trees">Trees</option>
+                    <option value="graphs">Graphs</option>
+                    <option value="dp">DP</option>
                 </select>
             </div>
+
             <div class="control-group">
                 <label for="algorithmSelect">Algorithm:</label>
                 <select id="algorithmSelect">
-                    <option value="bogo">Bogo Sort</option>
-                    <option value="bubble">Bubble Sort</option>
-                    <option value="selection">Selection Sort</option>
-                    <option value="insertion">Insertion Sort</option>
-                    <option value="quick">Quick Sort</option>
-                    <option value="merge">Merge Sort</option>
-                    <option value="counting">Counting Sort</option>
+                    <!-- Options will be populated dynamically by script.js -->
                 </select>
             </div>
+
             <div class="control-group">
                 <label for="sizeSelect">Size:</label>
                 <select id="sizeSelect">
@@ -43,55 +39,62 @@
                     <option value="30">30</option>
                 </select>
             </div>
+
             <div class="control-group">
                 <label for="speedSlider">Speed:</label>
-                <input type="range" id="speedSlider" min="100" max="900" value="700">
+                <input type="range" id="speedSlider" min="0" max="950" value="700">
             </div>
-            <div class="control-group buttons">
-                <button id="generateBtn">🎲 Generate New Array</button>
-                <button id="startBtn">▶️ Start</button>
-                <button id="pauseBtn" disabled>⏸️ Pause</button>
-                <button id="resetBtn">🔄 Reset</button>
-                <button id="stepBtn">👆 Step</button>
+
+            <div class="control-group">
+                <button id="generateBtn">Generate New Array</button>
+                <button id="startBtn">Start</button>
+                <button id="pauseBtn" disabled>Pause</button>
+                <button id="resetBtn">Reset</button>
+                <button id="stepBtn">Step</button>
             </div>
         </div>
+
         <div class="visualization">
             <div id="arrayContainer" class="array-container"></div>
             <div id="countingContainer" class="counting-container"></div>
         </div>
+
         <div class="status">
-            <span id="statusText">Ready to visualize!</span>
+            <span id="statusText">Ready to Visualize!</span>
             <div class="stats">
                 <div class="stat">
-                    <span id="comparisons" class="stat-value">0</span>
-                    <span>Comparisons</span>
+                    <span id="comparisons">0</span>
+                    <div>Comparisons</div>
                 </div>
                 <div class="stat">
-                    <span id="swaps" class="stat-value">0</span>
-                    <span>Swaps</span>
+                    <span id="swaps">0</span>
+                    <div>Swaps</div>
                 </div>
                 <div class="stat">
-                    <span id="time" class="stat-value">0</span>
-                    <span>Time (ms)</span>
+                    <span id="time">0</span>
+                    <div>Time (ms)</div>
                 </div>
             </div>
         </div>
+
         <div class="algorithm-info">
             <div id="algorithmDescription"></div>
             <div class="complexity">
                 <div class="complexity-item">
-                    <strong>Time:</strong> <span id="timeComplexity">O(n²)</span>
+                    <strong>Time Complexity</strong>
+                    <span id="timeComplexity">O(n²)</span>
                 </div>
                 <div class="complexity-item">
-                    <strong>Space:</strong> <span id="spaceComplexity">O(1)</span>
+                    <strong>Space Complexity</strong>
+                    <span id="spaceComplexity">O(1)</span>
                 </div>
                 <div class="complexity-item">
-                    <strong>Stable:</strong> <span id="stable">Yes</span>
+                    <strong>Stable</strong>
+                    <span id="stable">Yes</span>
                 </div>
             </div>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
-
 </html>
