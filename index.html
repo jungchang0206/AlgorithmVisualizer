@@ -8,93 +8,96 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <header class="header">
             <h1>Algorithm Visualizer</h1>
-        </div>
-
-        <div class="controls">
+            <p class="subtitle">Explore and visualize algorithms in real-time</p>
+        </header>
+        <section class="controls">
             <div class="control-group">
                 <label for="topicSelect">Topic:</label>
                 <select id="topicSelect">
                     <option value="sorting">Sorting</option>
-                    <option value="search">Search</option>
+                    <option value="search">Searching</option>
                     <option value="trees">Trees</option>
                     <option value="graphs">Graphs</option>
-                    <option value="dp">DP</option>
+                    <option value="dp">Dynamic Programming</option>
                 </select>
-            </div>
-
-            <div class="control-group">
                 <label for="algorithmSelect">Algorithm:</label>
                 <select id="algorithmSelect">
-                    <!-- Options will be populated dynamically by script.js -->
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="quick">Quick Sort</option>
+                    <option value="merge">Merge Sort</option>
+                    <option value="counting">Counting Sort</option>
+                    <option value="linear">Linear Search</option>
+                    <option value="binary">Binary Search</option>
+                    <option value="binary-search-tree">Binary Search Tree</option>
+                    <option value="bfs">Breadth-First Search</option>
+                    <option value="fibonacci">Fibonacci Sequence</option>
                 </select>
             </div>
-
             <div class="control-group">
-                <label for="sizeSelect">Size:</label>
+                <label for="sizeSelect">Array Size:</label>
                 <select id="sizeSelect">
                     <option value="10">10</option>
-                    <option value="20">20</option>
+                    <option value="20" selected>20</option>
                     <option value="30">30</option>
+                    <option value="40">40</option>
                 </select>
-            </div>
-
-            <div class="control-group">
                 <label for="speedSlider">Speed:</label>
                 <input type="range" id="speedSlider" min="0" max="950" value="700">
             </div>
-
-            <div class="control-group">
-                <button id="generateBtn">Generate New Array</button>
+            <div class="control-group buttons">
+                <button id="generateBtn">Generate Array</button>
                 <button id="startBtn">Start</button>
                 <button id="pauseBtn" disabled>Pause</button>
                 <button id="resetBtn">Reset</button>
                 <button id="stepBtn">Step</button>
             </div>
-        </div>
-
-        <div class="visualization">
+        </section>
+        <section class="visualization">
             <div id="arrayContainer" class="array-container"></div>
             <div id="countingContainer" class="counting-container"></div>
-        </div>
-
-        <div class="status">
-            <span id="statusText">Ready to Visualize!</span>
+            <div id="treeContainer" class="tree-container"></div>
+            <div id="graphContainer" class="graph-container"></div>
+            <div id="dpContainer" class="dp-container"></div>
+        </section>
+        <footer class="status">
+            <div class="status-text" id="statusText">Ready to Visualize!</div>
             <div class="stats">
                 <div class="stat">
+                    <label>Comparisons:</label>
                     <span id="comparisons">0</span>
-                    <div>Comparisons</div>
                 </div>
                 <div class="stat">
+                    <label>Swaps:</label>
                     <span id="swaps">0</span>
-                    <div>Swaps</div>
                 </div>
                 <div class="stat">
+                    <label>Time (ms):</label>
                     <span id="time">0</span>
-                    <div>Time (ms)</div>
                 </div>
             </div>
-        </div>
-
-        <div class="algorithm-info">
-            <div id="algorithmDescription"></div>
-            <div class="complexity">
-                <div class="complexity-item">
-                    <strong>Time Complexity</strong>
-                    <span id="timeComplexity">O(n²)</span>
-                </div>
-                <div class="complexity-item">
-                    <strong>Space Complexity</strong>
-                    <span id="spaceComplexity">O(1)</span>
-                </div>
-                <div class="complexity-item">
-                    <strong>Stable</strong>
-                    <span id="stable">Yes</span>
+            <div id="algorithm-info">
+                <p id="algorithmDescription"><strong>Bubble Sort: Repeatedly steps through the list, compares adjacent elements and swaps them if they're in the wrong order.</strong></p>
+                <div class="complexity">
+                    <div class="complexity-item">
+                        <label>Time Complexity:</label>
+                        <span id="timeComplexity">O(n²)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <label>Space Complexity:</label>
+                        <span id="spaceComplexity">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <label>Stable:</label>
+                        <span id="stable">Yes</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </footer>
     </div>
-    <script src="script.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>

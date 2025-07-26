@@ -1,3 +1,4 @@
+
 class AlgorithmVisualizer {
     constructor() {
         this.array = [];
