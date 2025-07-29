@@ -1,3 +1,9 @@
+.graph-node.glow {
+    filter: drop-shadow(0 0 10px #FFD700) drop-shadow(0 0 20px #FFD700);
+    stroke: #FFD700;
+    stroke-width: 4px;
+    transition: filter 0.2s, stroke 0.2s;
+}
 * {
     margin: 0;
     padding: 0;

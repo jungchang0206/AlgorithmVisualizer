@@ -15,6 +15,7 @@ export class AlgorithmVisualizer {
         this.graphs = new GraphAlgorithms(this.helpers);
 
         this.array = [];
+        this.currentGraph = null;
         this.isRunning = false;
         this.isPaused = false;
         this.stepMode = false;
@@ -143,6 +144,43 @@ export class AlgorithmVisualizer {
 
         this.currentAlgorithm = algorithmSelect.value;
         this.updateAlgorithmInfo();
+
+        // If topic is graphs, show a default graph visualization
+        if (this.currentTopic === 'graphs') {
+            // Weighted and unweighted default graphs
+            const weightedGraph = {
+                0: [[1, 2], [2, 4]],
+                1: [[2, 1], [3, 7]],
+                2: [[4, 3]],
+                3: [[5, 1]],
+                4: [[3, 2], [5, 5]],
+                5: []
+            };
+            const unweightedGraph = {
+                0: [1, 2],
+                1: [2, 3],
+                2: [4],
+                3: [5],
+                4: [3, 5],
+                5: []
+            };
+            // Algorithms that need weights
+            const weightedAlgs = ['dijkstra', 'prim'];
+            if (weightedAlgs.includes(this.currentAlgorithm)) {
+                this.currentGraph = weightedGraph;
+            } else if (this.currentAlgorithm === 'kruskal') {
+                this.currentGraph = {
+                    nodes: [0, 1, 2, 3, 4, 5],
+                    edges: [
+                        [0, 1, 2], [0, 2, 4], [1, 2, 1], [1, 3, 7],
+                        [2, 4, 3], [4, 3, 2], [4, 5, 5], [3, 5, 1]
+                    ]
+                };
+            } else {
+                this.currentGraph = unweightedGraph;
+            }
+            this.renderArray();
+        }
     }
 
     generateArray() {
@@ -170,7 +208,42 @@ export class AlgorithmVisualizer {
         } else if (this.currentTopic === 'trees') {
             this.helpers.renderTree(this.array);
         } else if (this.currentTopic === 'graphs') {
-            this.helpers.renderGraph(this.array);
+            // Choose the correct graph type for visualization
+            if (this.currentAlgorithm === 'dijkstra') {
+                const dijkstraGraph = HelperMethods.getDijkstraAdjacencyList();
+                this.helpers.renderGraph(dijkstraGraph, true);
+            } else if (this.currentAlgorithm === 'prim') {
+                // Show weighted graph for Prim (use previous weightedGraph or similar)
+                const weightedGraph = {
+                    0: [[1, 2], [2, 4]],
+                    1: [[2, 1], [3, 7]],
+                    2: [[4, 3]],
+                    3: [[5, 1]],
+                    4: [[3, 2], [5, 5]],
+                    5: []
+                };
+                this.helpers.renderGraph(weightedGraph, true);
+            } else if (this.currentAlgorithm === 'kruskal') {
+                const kruskalGraph = {
+                    nodes: [0, 1, 2, 3, 4, 5],
+                    edges: [
+                        [0, 1, 2], [0, 2, 4], [1, 2, 1], [1, 3, 7],
+                        [2, 4, 3], [4, 3, 2], [4, 5, 5], [3, 5, 1]
+                    ]
+                };
+                this.helpers.renderGraph(kruskalGraph, true);
+            } else {
+                // Show unweighted graph
+                const unweightedGraph = {
+                    0: [1, 2],
+                    1: [2, 3],
+                    2: [4],
+                    3: [5],
+                    4: [3, 5],
+                    5: []
+                };
+                this.helpers.renderGraph(unweightedGraph, false);
+            }
         } else if (this.currentTopic === 'dp') {
             this.helpers.renderDPTable(this.array);
         }
@@ -421,40 +494,74 @@ export class AlgorithmVisualizer {
                             throw new Error(`Unknown tree algorithm: ${this.currentAlgorithm}`);
                     }
                     break;
-                case 'graphs':
+                case 'graphs': {
+                    // Generate a sample graph and start node for demonstration
+                    // Adjacency list for BFS, DFS, Dijkstra, Prim, Topological Sort
+                    const sampleGraph = {
+                        0: [[1, 2], [2, 4]],
+                        1: [[2, 1], [3, 7]],
+                        2: [[4, 3]],
+                        3: [[5, 1]],
+                        4: [[3, 2], [5, 5]],
+                        5: []
+                    };
+                    // For unweighted algorithms, convert to adjacency list without weights
+                    const unweightedGraph = HelperMethods.getPyramidAdjacencyList();
+                    // For Kruskal: edge list
+                    const kruskalGraph = {
+                        nodes: [0, 1, 2, 3, 4, 5],
+                        edges: [
+                            [0, 1, 2], [0, 2, 4], [1, 2, 1], [1, 3, 7],
+                            [2, 4, 3], [4, 3, 2], [4, 5, 5], [3, 5, 1]
+                        ]
+                    };
+                    const startNode = 0;
+                    // Store the current graph for visualization
                     switch (this.currentAlgorithm) {
                         case 'bfs':
-                            algorithmPromise = this.graphs.bfs(this);
+                            this.currentGraph = unweightedGraph;
+                            algorithmPromise = this.graphs.bfs(unweightedGraph, startNode, this);
                             this.elements.statusText.textContent = 'Running Breadth-First Search...';
                             break;
                         case 'dfs':
-                            algorithmPromise = this.graphs.dfs(this);
+                            this.currentGraph = unweightedGraph;
+                            algorithmPromise = this.graphs.dfs(unweightedGraph, startNode, this);
                             this.elements.statusText.textContent = 'Running Depth-First Search...';
                             break;
                         case 'dijkstra':
-                            algorithmPromise = this.graphs.dijkstra(this);
+                            const dijkstraGraph = HelperMethods.getDijkstraAdjacencyList();
+                            this.currentGraph = dijkstraGraph;
+                            algorithmPromise = this.graphs.dijkstra(dijkstraGraph, startNode, this);
                             this.elements.statusText.textContent = "Running Dijkstra's Algorithm...";
                             break;
                         case 'kruskal':
-                            algorithmPromise = this.graphs.kruskal(this);
+                            this.currentGraph = kruskalGraph;
+                            algorithmPromise = this.graphs.kruskal(kruskalGraph, this);
                             this.elements.statusText.textContent = "Running Kruskal's Algorithm...";
                             break;
                         case 'topologicalSort':
-                            algorithmPromise = this.graphs.topologicalSort(this);
+                            this.currentGraph = unweightedGraph;
+                            algorithmPromise = this.graphs.topologicalSort(unweightedGraph, this);
                             this.elements.statusText.textContent = 'Running Topological Sort...';
                             break;
                         case 'prim':
-                            algorithmPromise = this.graphs.prim(this);
+                            this.currentGraph = sampleGraph;
+                            algorithmPromise = this.graphs.prim(sampleGraph, startNode, this);
                             this.elements.statusText.textContent = "Running Prim's Algorithm...";
                             break;
                         case 'khan':
-                            algorithmPromise = this.graphs.khan(this);
-                            this.elements.statusText.textContent = "Running Khan's Algorithm...";
+                            this.currentGraph = unweightedGraph;
+                            // Not implemented
+                            this.elements.statusText.textContent = "Khan's Algorithm not implemented.";
+                            algorithmPromise = Promise.resolve();
                             break;
                         default:
                             throw new Error(`Unknown graph algorithm: ${this.currentAlgorithm}`);
                     }
+                    // Render the graph immediately
+                    this.renderArray();
                     break;
+                }
                 case 'dp':
                     switch (this.currentAlgorithm) {
                         case 'fibonacci':
@@ -682,11 +789,46 @@ export class AlgorithmVisualizer {
             element.classList.remove('comparing', 'sorted', 'pivot', 'active');
         });
 
-        this.renderArray();
+        // Clear containers BEFORE rendering
         this.elements.countingContainer.innerHTML = '';
         this.elements.treeContainer.innerHTML = '';
         this.elements.graphContainer.innerHTML = '';
         this.elements.dpContainer.innerHTML = '';
+
+        // If topic is graphs, show a default graph visualization
+        if (this.currentTopic === 'graphs') {
+            const weightedGraph = {
+                0: [[1, 2], [2, 4]],
+                1: [[2, 1], [3, 7]],
+                2: [[4, 3]],
+                3: [[5, 1]],
+                4: [[3, 2], [5, 5]],
+                5: []
+            };
+            const unweightedGraph = {
+                0: [1, 2],
+                1: [2, 3],
+                2: [4],
+                3: [5],
+                4: [3, 5],
+                5: []
+            };
+            const weightedAlgs = ['dijkstra', 'prim'];
+            if (weightedAlgs.includes(this.currentAlgorithm)) {
+                this.currentGraph = weightedGraph;
+            } else if (this.currentAlgorithm === 'kruskal') {
+                this.currentGraph = {
+                    nodes: [0, 1, 2, 3, 4, 5],
+                    edges: [
+                        [0, 1, 2], [0, 2, 4], [1, 2, 1], [1, 3, 7],
+                        [2, 4, 3], [4, 3, 2], [4, 5, 5], [3, 5, 1]
+                    ]
+                };
+            } else {
+                this.currentGraph = unweightedGraph;
+            }
+        }
+        this.renderArray();
     }
 
     complete() {
